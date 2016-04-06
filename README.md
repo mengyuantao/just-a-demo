@@ -1,6 +1,7 @@
 # 环境
 ## php7
-* compile php7 --with-curl=/usr/local/lib/curl/
+* compile php7
+* ./configure --with-curl=/usr/local/opt/curl/ --with-openssl=/usr/local/opt/openssl
 * install pecl extension yaf and enable it in php.ini
 
 ## nginx
