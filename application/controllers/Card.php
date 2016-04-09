@@ -24,14 +24,22 @@ class CardController extends Yaf_Controller_Abstract {
     /**
      * example:
      * data-video="http://mvvideo2.meitudata.com/57026422677221659.mp4"
+     * http://mvvideo2.meitudata.com/57026422677221659.mp4 
+     *
      * data-poster="http://mvimg2.meitudata.com/57023ee9730c27409.jpg!thumb320"
+     * http://mvimg2.meitudata.com/57023ee9730c27409.jpg
      */
     private static function getMeiPaiUrl($content, $attr) {
         $pos = strpos($content, $attr);
         $data = substr($content, $pos);
         $start = strpos($data, '"');
         $end = strpos($data, '"', $start + 1);
-        return substr($data, $start + 1, ($end - $start - 1));
+        $url = substr($data, $start + 1, ($end - $start - 1));
+        $pos = strpos($url, '!');
+        if ($pos === false) {
+            return $url;
+        }
+        return substr($url, 0, $pos);
     }
 
     private static function getPageContent($url) {
@@ -84,7 +92,7 @@ class CardController extends Yaf_Controller_Abstract {
             return;
         }
 
-        $page_url = trim($page_url);
+        $page_url = filter_var(trim($page_url), FILTER_SANITIZE_STRING);
         $site = $this->getSite($page_url);
         if (strpos($site, "meipai.com") === false) {
             $message = "do not support this site: $site";
@@ -99,8 +107,8 @@ class CardController extends Yaf_Controller_Abstract {
             return;
         }
 
-        $image_url = $this->getMeiPaiUrl($content, "data-poster");
-        $video_url = $this->getMeiPaiUrl($content, "data-video");
+        $image_url = filter_var($this->getMeiPaiUrl($content, "data-poster"), FILTER_SANITIZE_STRING);
+        $video_url = filter_var($this->getMeiPaiUrl($content, "data-video"), FILTER_SANITIZE_STRING);
         if (empty($image_url) || empty($video_url)) {
             $message = "failed to parse link: $page_url";
             $this->getView()->assign("message", $message);
@@ -123,7 +131,7 @@ EOT;
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':uuid', uniqid(), SQLITE3_TEXT);
         $stmt->bindValue(':name', "", SQLITE3_TEXT);
-        $stmt->bindValue(':caption', $page_url, SQLITE3_TEXT);
+        $stmt->bindValue(':caption', "", SQLITE3_TEXT);
         $stmt->bindValue(':site', $site, SQLITE3_TEXT);
         $stmt->bindValue(':page_url', $page_url, SQLITE3_TEXT);
         $stmt->bindValue(':image_url', $image_url, SQLITE3_TEXT);
