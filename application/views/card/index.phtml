@@ -1,11 +1,15 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>card</title>
+
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="bookmark" href="/favicon.ico" type="image/x-icon"　/>
+
+    <title>老司机－带带我</title>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -18,39 +22,39 @@
     <script src="//upcdn.b0.upaiyun.com/libs/jquery/jquery-2.0.3.min.js"></script>
     <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <style>
-      .form-group {
-        max-width: 600px;
-      }
-
-      button {
-        margin-top: 20px;
-      }
-
       .container {
-        max-width: 600px;
+        max-width: 640px;
         margin: 0px auto;
       }
 
       .card-video {
         max-width: 100%;
       }
+
+      form {
+        padding-top: 10px;
+      }
     </style>
   </head>
   <body>
     <div class="container">
-      <form class="form-group" action="card/add" method="GET">
-        <div>
-          <label for="url-link">Link</label>
-          <input type="text" class="form-control" id="url-link" name="page_url" placeholder="page link">
+      <form action="card/add" method="GET">
+        <div class="form-group col-xs-9">
+          <label class="sr-only" for="url-link">link</label>
+          <input type="text" width="100%" class="form-control" id="url-link" name="page_url" placeholder="链接">
         </div>
-        <button type="submit" class="btn btn-default">Submit</button>
+        <div class="col-xs-2">
+            <button type="submit" class="btn btn-primary btn-default">发车</button>
+        </div>
       </form>
+      <div class="clearfix"></div>
       <div class="">
 <?php
 foreach ($cards as $uuid => $card) {
     echo <<<EOT
+
         <div id="$uuid" class="card">
-          <a href="{$card['page_url']}">[link]</a> | <span>{$card['time']}</span>
+          <div><a href="{$card['page_url']}">[原址]</a> | <span>{$card['time']}</span></div>
           <video controls loop class="card-video" poster="{$card['image_url']}" src="{$card['video_url']}"></video>
         </div>
 EOT;
